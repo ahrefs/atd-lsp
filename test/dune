@@ -1,0 +1,5 @@
+(test
+ (name test_atd_lsp)
+ (libraries atd_lsp_lib ounit2 lwt lwt.unix)
+ (preprocess (pps lwt_ppx))
+ (deps (source_tree "artifacts"))) 

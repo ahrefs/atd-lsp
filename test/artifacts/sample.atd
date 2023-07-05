@@ -1,0 +1,90 @@
+(* Sample ATD file for testing go to definition functionality *)
+
+(* Basic type definitions *)
+type user_id = int
+type username = string
+type email = string
+type timestamp = string
+
+(* Record type that references other types *)
+type user = {
+  id: user_id;
+  name: username;
+  email: email;
+  created_at: timestamp;
+  updated_at: timestamp;
+}
+
+(* Variant type that references other types *)
+type user_identifier = [
+  | Id of user_id
+  | Name of username
+  | Email of email
+]
+
+(* Nested record type *)
+type address = {
+  street: string;
+  city: string;
+  country: string;
+  postal_code: string;
+}
+
+(* Record that references another record type *)
+type user_profile = {
+  user: user;
+  address: address;
+  bio: string;
+}
+
+(* Parametric type *)
+type 'a result = [
+  | Success of 'a
+  | Error of string
+]
+
+(* Using parametric type with other types *)
+type user_result = user result
+type profile_result = user_profile result
+
+(* Recursive type *)
+type comment = {
+  id: int;
+  user: user;
+  content: string;
+  replies: comment list;
+  created_at: timestamp;
+}
+
+(* Type with inheritance *)
+type base_entity = {
+  id: int;
+  created_at: timestamp;
+}
+
+type derived_entity = {
+  inherit base_entity;
+  name: string;
+  description: string;
+}
+
+(* Complex nested structure *)
+type notification = [
+  | UserCreated of user
+  | CommentAdded of comment
+  | ProfileUpdated of user_profile
+]
+
+(* Type that uses multiple other types *)
+type activity = {
+  id: int;
+  actor: user;
+  action: string;
+  target: [
+    | User of user
+    | Comment of comment
+    | Profile of user_profile
+  ];
+  metadata: (string * string) list;
+  timestamp: timestamp;
+} 

@@ -1,0 +1,29 @@
+out
+dist
+node_modules
+.vscode-test/
+*.vsix
+*.annot
+*.cmo
+*.cma
+*.cmi
+*.a
+*.o
+*.cmx
+*.cmxs
+*.cmxa
+
+# dune working directory
+_build/
+
+# esy working directory
+_esy
+
+# Merlin configuring file for Vim and Emacs
+.merlin
+
+# Dune generated files
+*.install
+
+# Local OPAM switch
+_opam/

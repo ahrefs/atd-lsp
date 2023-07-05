@@ -1,0 +1,7 @@
+(executable
+ (package atd_lsp)
+ (public_name atdlsp)
+ (name main)
+ (preprocess
+  (pps lwt_ppx))
+ (libraries atd_lsp_lib atd lsp extlib lwt lwt.unix))
