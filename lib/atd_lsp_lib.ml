@@ -18,9 +18,15 @@ module Io_lwt =
       let read_line = Lwt_io.read_line_opt
 
       let read_exactly ic count =
-        match%lwt Lwt_io.read ~count ic with
-        | "" -> Lwt.return_none
-        | s -> Lwt.return_some s
+        let buf = Bytes.create count in
+        let rec loop offset remaining =
+          if remaining <= 0 then Lwt.return (Some (Bytes.to_string buf))
+          else
+            let%lwt read_bytes = Lwt_io.read_into ic buf offset remaining in
+            if read_bytes = 0 then Lwt.return None
+            else loop (offset + read_bytes) (remaining - read_bytes)
+        in
+        loop 0 count
 
       let write oc lines =
         Lwt_list.iter_s (fun line -> Lwt_io.write oc line) lines
@@ -142,9 +148,9 @@ module Requests = struct
     let%lwt atd_string =
       Lwt_io.with_file ~mode:Lwt_io.Input path (fun ic -> Lwt_io.read ic)
     in
-    let { Symbols.symbols; _ } = Symbols.of_atd_string atd_string in
+    let { Symbols.declarations; _ } = Symbols.of_atd_string atd_string in
     let symbols =
-      symbols
+      declarations
       |> List.map (fun (name, (start, end_)) ->
              let range = Position_helper.to_lsp_range start end_ in
              let kind = Lsp.Types.SymbolKind.String in
