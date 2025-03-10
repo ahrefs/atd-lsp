@@ -17,8 +17,9 @@ depends: [
   "extlib"
   "lwt"
   "lwt_ppx"
-  "ocaml-format" {dev & = "0.24.1"}
-  "ocaml-lsp-server" {dev & = "1.6.0"}
+  "ocamlformat" {dev}
+  "ocaml-lsp-server" {dev}
+  "ounit2" {with-test}
   "odoc" {with-doc}
 ]
 build: [

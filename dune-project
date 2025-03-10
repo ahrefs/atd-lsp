@@ -28,14 +28,9 @@
   extlib
   lwt
   lwt_ppx
-  (ocaml-format
-   (and
-    :dev
-    (= 0.24.1)))
-  (ocaml-lsp-server
-   (and
-    :dev
-    (= 1.6.0))))
+  (ocamlformat :dev)
+  (ocaml-lsp-server :dev)
+  (ounit2 :with-test))
  (tags
   (topics "language server" "atd")))
 
