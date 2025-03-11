@@ -19,14 +19,10 @@ module Io_lwt =
 
       let read_exactly ic count =
         let buf = Bytes.create count in
-        let rec loop offset remaining =
-          if remaining <= 0 then Lwt.return (Some (Bytes.to_string buf))
-          else
-            let%lwt read_bytes = Lwt_io.read_into ic buf offset remaining in
-            if read_bytes = 0 then Lwt.return None
-            else loop (offset + read_bytes) (remaining - read_bytes)
-        in
-        loop 0 count
+        try%lwt
+          let%lwt () = Lwt_io.read_into_exactly ic buf 0 count in
+          Lwt.return_some (Bytes.to_string buf)
+        with End_of_file -> Lwt.return_none
 
       let write oc lines =
         Lwt_list.iter_s (fun line -> Lwt_io.write oc line) lines
