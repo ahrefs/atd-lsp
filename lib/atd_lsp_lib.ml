@@ -149,7 +149,7 @@ module Requests = struct
       declarations
       |> List.map (fun (name, (start, end_)) ->
              let range = Position_helper.to_lsp_range start end_ in
-             let kind = Lsp.Types.SymbolKind.String in
+             let kind = Lsp.Types.SymbolKind.TypeParameter in
              Lsp.Types.DocumentSymbol.create ~name ~kind ~range
                ~selectionRange:range ())
     in
