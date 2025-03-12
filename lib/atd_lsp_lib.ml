@@ -204,9 +204,7 @@ let on_request (req : Jsonrpc.Request.t) : Jsonrpc.Response.t Lwt.t =
           let%lwt res = Requests.initialize () in
           let response = Lsp.Client_request.yojson_of_result r res in
           Lwt.return (Jsonrpc.Response.ok req.id response)
-      | Shutdown ->
-          let response = Lsp.Client_request.yojson_of_result r () in
-          Lwt.return (Jsonrpc.Response.ok req.id response)
+      | Shutdown -> raise Exit
       | _ -> Lwt.fail_with "not implemented")
 
 let handler (ic, oc) =
@@ -238,8 +236,10 @@ let stream_of_channel = function
   | _ -> failwith "not implemented"
 
 let rec start (ic, oc) =
-  let%lwt () = handler (ic, oc) in
-  start (ic, oc)
+  try%lwt
+    let%lwt () = handler (ic, oc) in
+    start (ic, oc)
+  with Exit -> Lwt.return_unit
 
 let run (channel : Lsp.Cli.Channel.t) =
   prerr_endline "LSP server started";
