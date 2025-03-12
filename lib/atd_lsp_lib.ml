@@ -228,18 +228,24 @@ let handler (ic, oc) =
           prerr_endline "received batch call";
           Lwt.return_unit)
 
+let rec start (ic, oc) =
+  try%lwt
+    let%lwt () = handler (ic, oc) in
+    start (ic, oc)
+  with
+  | Exit ->
+      prerr_endline "exiting";
+      Lwt.return_unit
+  | exn ->
+      prerr_endline (Printexc.to_string exn);
+      start (ic, oc)
+
 let stream_of_channel = function
   | Lsp.Cli.Channel.Stdio ->
       let stdin = Lwt_io.stdin in
       let stdout = Lwt_io.stdout in
       (stdin, stdout)
   | _ -> failwith "not implemented"
-
-let rec start (ic, oc) =
-  try%lwt
-    let%lwt () = handler (ic, oc) in
-    start (ic, oc)
-  with Exit -> Lwt.return_unit
 
 let run (channel : Lsp.Cli.Channel.t) =
   prerr_endline "LSP server started";
