@@ -21,7 +21,7 @@ module Io_lwt =
         let buf = Bytes.create count in
         try%lwt
           let%lwt () = Lwt_io.read_into_exactly ic buf 0 count in
-          Lwt.return_some (Bytes.to_string buf)
+          Lwt.return_some (Bytes.unsafe_to_string buf)
         with End_of_file -> Lwt.return_none
 
       let write oc lines =
